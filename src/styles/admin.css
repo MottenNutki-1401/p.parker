@@ -1,0 +1,222 @@
+/* MODALS  */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.64);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+
+}
+
+
+.logout-btn{
+  width: 500%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  background-color: #f7e700;
+  border: 1px solid #000000;
+  cursor: pointer;
+
+  font-size: 16px;
+  color: rgb(18, 18, 18);
+}
+.modal-box {
+  background: rgb(12, 12, 12);
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid #efefef;
+}
+.in {
+  width: 90%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: #ffffff;
+  color: #000000;
+}
+
+/*  WRAPPER */
+
+.parking-wrapper {
+  margin-top: 110px;
+}
+
+/* HEADER */
+.header {
+background-color: rgb(255, 143, 143);
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+.header-text {
+  display: flex;
+  align-items: center;
+  color: white;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px; 
+}
+
+/* logout button */
+.log{
+  width: 50%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background-color: #f7e700;
+  border: 1px solid #000000;
+  cursor: pointer;
+
+  font-size: 16px;
+  color: rgb(18, 18, 18);
+}
+
+.log:hover {
+  background-color: #000;
+  color: white;
+  border: 1px solid #ffffff;
+}
+
+
+.close{
+  width: 50%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background-color: #000000;
+  border: 1px solid #ffffff;
+  cursor: pointer;
+
+  font-size: 16px;
+  color: rgb(255, 255, 255);
+}
+
+
+.devgrp{
+  display: flex;
+  gap: 10px;
+
+}
+
+/*  LAYOUT  */
+
+.parking-lot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  overflow-x: auto; /* prevents “eaten sides” */
+}
+
+.parking-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 12px;
+}
+
+/* road */
+.road {
+  width: 100%;
+  height: 10px;
+  border-radius: 5px;
+}
+
+/* LOT */
+
+.slot {
+  width: 150px;
+  height: 250px;
+
+  border: 1px solid #efefef;
+  border-radius: 10px;
+
+  display: flex;
+  flex-direction: column;   /* IMPORTANT */
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 10px;
+  overflow: hidden;         /* stops spill */
+}
+
+/* states */
+.slot.available {
+  background: #76af79;
+}
+
+.slot.occupied {
+  background: #9B2A3B;
+}
+
+.slot.maintenance {
+  background: #e79146;
+}
+
+
+.topview2 {
+  width: 400px;
+  height: 150px;
+  object-fit: contain;
+}
+
+.admin-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+}
+
+.admin-btns button {
+  font-size: 9px;
+  padding: 4px 6px;
+}
+
+.vector {
+  
+  top: -40px;
+  left: -5px;
+  bottom: 10px;
+}
+.yellow {
+ 
+  top: 100px;
+  left: 5px;
+}
+
+.rev {
+ background: rgba(5, 5, 5, 0.971);
+ border: 1px solid #efefef;
+  padding: 5px;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-15%);
+  border-radius: 10px;
+  width: 20%;
+}

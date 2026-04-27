@@ -1,0 +1,52 @@
+.report-box {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+
+  background: rgba(5, 5, 5, 0.971);
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #efefef;
+  color: #fff5f5;
+  width: 95%;
+  left: 50%;
+  transform: translateX(1%);
+}
+
+.total {
+  flex: 2;
+  text-align: center;
+}
+
+.transactions-box {
+  flex: 5;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.transactions-box::-webkit-scrollbar {
+  width: 6px;
+}
+
+.transactions-box::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.transactions-box::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+
+.report-item {
+  text-align: center;
+  font-size: 16px;
+
+}
+
+h2, h1, h3 {
+  text-align: center;
+  color: #fff5f5;
+}
