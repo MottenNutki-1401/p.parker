@@ -19,46 +19,44 @@ function RevenueReport() {
     setTodayRevenue(total);
   }, []);
 
-  return (
-
-    <div className="report-box">
-     <div className="total">
-    
-      <h2>Today's Revenue</h2>
-         <hr />
+return (
+  <div className="report-box">
+    <div className="total">
+      <p className="label">Today's Revenue</p>
       <h1>₱{todayRevenue}</h1>
-     </div>
-
-  
-     <div className="transactions-box">
-
-    <h3>Transactions</h3>
-   <hr />
-   
-        {transactions.length === 0 ? (
-          <p>No transactions yet</p>
-
-        ) : (
-
-          transactions.map((t, i) => (
-
-            <div key={i} className="report-item">
-
-              <p>Slot #{t.slotId}</p>
-              <p>{t.timeIn} - {t.timeOut}</p>
-              <p>₱{t.price}</p>
-              <p>{t.date}</p>
-              <hr />
-            </div>
-          ))
-        )}
-      </div>
-    
-      
     </div>
 
-    
-  );
+    <div className="transactions-box">
+      <h3>Transactions</h3>
+      {transactions.length === 0 ? (
+        <p className="empty">No transactions yet</p>
+      ) : (
+        <table className="tx-table">
+          <thead>
+            <tr>
+              <th>Slot</th>
+              <th>Time In</th>
+              <th>Time Out</th>
+              <th>Date</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {transactions.map((t, i) => (
+              <tr key={i}>
+                <td>#{t.slotId}</td>
+                <td>{t.timeIn}</td>
+                <td>{t.timeOut}</td>
+                <td>{t.date}</td>
+                <td className="amount-cell">₱{t.price}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  </div>
+);
 }
 
 export default RevenueReport;

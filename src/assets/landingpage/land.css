@@ -1,0 +1,350 @@
+/* ─── BASE ─────────────────────────────────────────────── */
+body {
+  background: linear-gradient(135deg, #3d3126 0%, #1a1a2e 50%, #371d1d 100%);
+  font-family: 'Courier New', 'SF Mono', monospace;
+  min-height: 100vh;
+  overflow-x: hidden;
+  color: #f5f0eb;
+  overflow-y: auto;
+}
+
+/* ─── LAYOUT ────────────────────────────────────────────── */
+.landing1 {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+  padding: 0 20px 120px;
+  gap: 0;
+}
+
+/* ─── BACKGROUND ASSETS ─────────────────────────────────── */
+.car-bg1 {
+  position: fixed;
+  top: 25%;
+  left: 5%;
+  width: clamp(400px, 60vw, 1000px);
+  height: auto;
+  opacity: 0.35;
+  z-index: 0;
+  filter: saturate(0);
+}
+
+.vector1 {
+  position: fixed;
+  top: -40px;
+  left: -5px;
+  z-index: 0;
+  pointer-events: none;
+  width: 280px;
+  opacity: 0.1;
+}
+
+/* ─── GLASS ─────────────────────────────────────────────── */
+.glass1 {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 20px;
+}
+
+/* ─── HERO ──────────────────────────────────────────────── */
+.hero {
+  margin-top: 90px;
+  width: 100%;
+  max-width: 860px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.badge1 {
+  display: inline-block;
+  font-size: 22px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #ffe100;
+  border: 1px solid rgba(255, 225, 0, 0.3);
+  padding: 5px 14px;
+  border-radius: 999px;
+  margin-bottom: 20px;
+  opacity: 0.85;
+}
+
+/* ─── TITLE ─────────────────────────────────────────────── */
+.title1 {
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  font-weight: 700;
+  color: #f5f0eb;
+  margin-bottom: 16px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.title1::after {
+  content: "|";
+  margin-left: 4px;
+  color: #ffe100;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ─── SUBTITLE ──────────────────────────────────────────── */
+.subtitle1 {
+  font-size: 1.3rem;
+  opacity: 0.65;
+  margin-bottom: 32px;
+  max-width: 480px;
+  line-height: 1.6;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ─── BUTTONS ───────────────────────────────────────────── */
+.buttons1 {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.sign1 {
+  background: #ffe100;
+  color: #0a0a0a;
+  padding: 13px 30px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  letter-spacing: 0.02em;
+}
+
+.sign1:hover {
+  background: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(255, 225, 0, 0.25);
+}
+
+.sign1:active {
+  transform: translateY(-1px);
+}
+
+.login1 {
+  background: transparent;
+  color: #f5f0eb;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 13px 30px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.login1:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.45);
+  transform: translateY(-2px);
+}
+
+/* ─── SECTION LABELS ────────────────────────────────────── */
+.section-label1 {
+  font-size: 1.67rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #ffe100;
+  opacity: 0.7;
+  margin-bottom: 8px;
+}
+
+.section-title1 {
+ font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  margin-bottom: 40px;
+  letter-spacing: -0.01em;
+}
+
+/* ─── FEATURES ──────────────────────────────────────────── */
+.features-section1 {
+  margin-top: 100px;
+  text-align: center;
+  width: 100%;
+  max-width: 900px;
+  position: relative;
+  z-index: 1;
+}
+
+.feature-grid1 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.card1 {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 28px 22px;
+  text-align: left;
+  transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+  animation: fadeUp 0.5s ease both;
+}
+
+.card1:hover {
+  transform: translateY(-6px);
+  background: rgba(255, 225, 0, 0.05);
+  border-color: rgba(255, 225, 0, 0.2);
+}
+
+.card-icon1 {
+  font-size: 1.6rem;
+  margin-bottom: 14px;
+}
+
+.card1 h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #f5f0eb;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.card1 p {
+  font-size: 1rem;
+  opacity: 0.6;
+  line-height: 1.6;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ─── HOW IT WORKS ──────────────────────────────────────── */
+.how1 {
+  margin-top: 100px;
+  text-align: center;
+  width: 100%;
+  max-width: 800px;
+  position: relative;
+  z-index: 1;
+}
+
+.steps1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.step1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.step-num1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffe100;
+  opacity: 0.9;
+  line-height: 1;
+}
+
+.step-label1 {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  white-space: nowrap;
+}
+
+.step-connector1 {
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(to right, rgba(255,225,0,0.4), rgba(255,225,0,0.1));
+  margin: 0 16px;
+  align-self: flex-start;
+  margin-top: 20px;
+}
+
+/* ─── CTA ───────────────────────────────────────────────── */
+.cta {
+  margin-top: 100px;
+  width: 100%;
+  max-width: 680px;
+  padding: 64px 40px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.cta h2 {
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+
+.cta p {
+  font-size: 0.95rem;
+  opacity: 0.55;
+  margin-bottom: 28px;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ─── ANIMATIONS ────────────────────────────────────────── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-up {
+  animation: fadeUp 0.6s ease both;
+}
+
+.features-section1.fade-up { animation-delay: 0.1s; }
+.how1.fade-up              { animation-delay: 0.15s; }
+.cta.fade-up               { animation-delay: 0.2s; }
+
+/* ─── GLOBAL ────────────────────────────────────────────── */
+.landing1 * {
+  box-sizing: border-box;
+}
+
+/* ─── RESPONSIVE ────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .hero {
+    padding: 40px 20px;
+  }
+
+  .steps1 {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .step-connector1 {
+    display: none;
+  }
+
+  .feature-grid1 {
+    grid-template-columns: 1fr;
+  }
+}

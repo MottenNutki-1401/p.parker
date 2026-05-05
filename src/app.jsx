@@ -7,6 +7,7 @@ import Booking from "./pages/booking.jsx";
 import AdminLoginModal from "./pages/adminmodal.jsx";
 import Dashboard from "./pages/dashboard.jsx";
 import WelcomePage from "./pages/welc.jsx";
+import Land from "./assets/landingpage/land.jsx";
 
 function ProtectedRoute({ children }) {
   const isAuth = localStorage.getItem("user");
@@ -29,7 +30,9 @@ export default function App() {
     <BrowserRouter>
       <Routes>
 
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Land />} />
+        
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/welcome" element={<WelcomePage />} />
 

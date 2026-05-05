@@ -206,8 +206,8 @@ const calculatePrice = (timeIn, timeOut) => {
                   className={`slot ${getStatusClass(slot.status)} ${
                     slot.bookedBy === currentUser ? "mine" : ""
                   }`}
-                  onClick={() => setSelectedSlot(slot)}
-                >
+                  onClick={() => setSelectedSlot(slot)} >
+                     <div className="slot-number">Slot#{slot.id}</div>
                   {getContent(slot.status)}
                 </div>
               );

@@ -11,38 +11,38 @@ function AdminDashboard() {
   const [selectedSlot, setSelectedSlot] = useState(null);
   
   const [slots, setSlots] = useState([
-  { id: 1, code: "001", status: "available" },
-  { id: 2, code: "002", status: "occupied" },
-  { id: 3, code: "003", status: "available" },
-  { id: 4, code: "004", status: "occupied" },
-  { id: 5, code: "005", status: "occupied" },
-  { id: 6, code: "006", status: "available" },
-  { id: 7, code: "007", status: "available" },
-  { id: 8, code: "008", status: "occupied" },
-  { id: 9, code: "009", status: "occupied" },
-  { id: 10, code: "010", status: "available" },
-  { id: 11, code: "011", status: "occupied" },
-  { id: 12, code: "012", status: "occupied" },
-  { id: 13, code: "013", status: "available" },
-  { id: 14, code: "014", status: "occupied" },
-  { id: 15, code: "015", status: "occupied" },
-  { id: 16, code: "016", status: "available" },
-  { id: 17, code: "017", status: "available" },
-  { id: 18, code: "018", status: "occupied" },
-  { id: 19, code: "019", status: "maintenance" },
-  { id: 20, code: "020", status: "occupied" },
-  { id: 21, code: "021", status: "occupied" },
-  { id: 22, code: "022", status: "occupied" },
-  { id: 23, code: "023", status: "available" },
-  { id: 24, code: "024", status: "occupied" },
-  { id: 25, code: "025", status: "occupied" },
-  { id: 26, code: "026", status: "available" },
-  { id: 27, code: "027", status: "available" },
-  { id: 28, code: "028", status: "available" },
-  { id: 29, code: "029", status: "available" },
-  { id: 30, code: "030", status: "available" },
-  { id: 31, code: "031", status: "available" },
-  { id: 32, code: "032", status: "available" },
+  { id: 1, code: "001", status: "Available" },
+  { id: 2, code: "002", status: "Occupied" },
+  { id: 3, code: "003", status: "Available" },
+  { id: 4, code: "004", status: "Occupied" },
+  { id: 5, code: "005", status: "Occupied" },
+  { id: 6, code: "006", status: "Available" },
+  { id: 7, code: "007", status: "Available" },
+  { id: 8, code: "008", status: "Occupied" },
+  { id: 9, code: "009", status: "Occupied" },
+  { id: 10, code: "010", status: "Available" },
+  { id: 11, code: "011", status: "Occupied" },
+  { id: 12, code: "012", status: "Occupied" },
+  { id: 13, code: "013", status: "Available" },
+  { id: 14, code: "014", status: "Occupied" },
+  { id: 15, code: "015", status: "Occupied" },
+  { id: 16, code: "016", status: "Available" },
+  { id: 17, code: "017", status: "Available" },
+  { id: 18, code: "018", status: "Occupied" },
+  { id: 19, code: "019", status: "Maintenance" },
+  { id: 20, code: "020", status: "Occupied" },
+  { id: 21, code: "021", status: "Occupied" },
+  { id: 22, code: "022", status: "Occupied" },
+  { id: 23, code: "023", status: "Available" },
+  { id: 24, code: "024", status: "Occupied" },
+  { id: 25, code: "025", status: "Occupied" },
+  { id: 26, code: "026", status: "Available" },
+  { id: 27, code: "027", status: "Available" },
+  { id: 28, code: "028", status: "Available" },
+  { id: 29, code: "029", status: "Available" },
+  { id: 30, code: "030", status: "Available" },
+  { id: 31, code: "031", status: "Available" },
+  { id: 32, code: "032", status: "Available" },
 ]);
 
   const layout = [
@@ -86,8 +86,6 @@ function AdminDashboard() {
 
   return (
     <div className="parking-wrapper">
-
-  <img src={vector} className="vector" alt="yellow" /> 
     <h1 className="rev">Revenue Report</h1>
 
       <RevenueReport />
@@ -113,7 +111,8 @@ function AdminDashboard() {
           className={`slot ${slot.status}`}
           onClick={() => openModal(slot)}
         >
-                    {slot.status === "occupied" ? (
+                    <div className="slot-number">Slot#{slot.code}</div>
+                    {slot.status === "Occupied" ? (
                       <img src={topview} className="topview2" />
                     ) : (
                       <h3>{slot.status}</h3>
@@ -123,7 +122,7 @@ function AdminDashboard() {
                      <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            updateStatus(slot.id, "available");
+                            updateStatus(slot.id, "Available");
                           }}
                         >
                         Available
@@ -132,7 +131,7 @@ function AdminDashboard() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          updateStatus(slot.id, "occupied");
+                          updateStatus(slot.id, "Occupied");
                         }}
                       >
                         Occupied
@@ -141,7 +140,7 @@ function AdminDashboard() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          updateStatus(slot.id, "maintenance");
+                          updateStatus(slot.id, "Maintenance");
                         }}
                       >
                         Maintenance

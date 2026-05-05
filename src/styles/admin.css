@@ -52,6 +52,7 @@
 
 .parking-wrapper {
   margin-top: 110px;
+
 }
 
 /* HEADER */
@@ -167,15 +168,15 @@ background-color: rgb(255, 143, 143);
 }
 
 /* states */
-.slot.available {
+.slot.Available {
   background: #76af79;
 }
 
-.slot.occupied {
+.slot.Occupied {
   background: #9B2A3B;
 }
 
-.slot.maintenance {
+.slot.Maintenance {
   background: #e79146;
 }
 

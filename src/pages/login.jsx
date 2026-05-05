@@ -20,7 +20,7 @@ function Login() {
       JSON.stringify({ role: "admin", email: "dev@admin.com" })
     );
 
-    navigate("/home"); // 🔥 go straight to admin
+    navigate("/home"); 
   };
 
   const handleSubmit = async (e) => {
@@ -51,14 +51,14 @@ function Login() {
 
   <div className="login-page">
 
-  {/* DEV BUTTON */}
+  {/* im for testinggg */}
       {DEV_MODE && (
         <button onClick={handleDevAccess} style={{ marginBottom: "10px" }}>
           Dev Admin Access
         </button>
       )}
 
-        <div className="illusion"></div>
+    <div className="illusion"></div>
 
    <img src={car} className="car-bg" alt="car" />
    <img src={vector} className="vector" alt="yellow" /> 
