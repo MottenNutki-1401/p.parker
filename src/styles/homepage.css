@@ -11,11 +11,15 @@
     border: 1px solid #efefef;
 
     position: fixed;
-    right: 20px;
+    right: 10px;
     bottom: 20px;
 
     display: flex;
     flex-direction: row; /*  stack items vertically */
     gap: 10px; /*  spacing between items */
 }
-    
+    .meow{
+margin-top: 10px;
+  color: #fff5f5;
+   margin-left: -0%;
+    }

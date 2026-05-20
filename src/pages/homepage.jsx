@@ -34,9 +34,9 @@ function Homepage() {
         <ParkingSlots />
 
         <div className="box">
-          <p>🔴 Occupied</p>
-          <p>🟢 Available</p>
-          <p>🟠 Under Maintenance</p>
+          <h3 className= "meow">🔴 Occupied</h3>
+          <h3 className= "meow">🟢 Available</h3>
+          <h3 className= "meow">🟠 Under Maintenance</h3>
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 .parking-wrapper {
-  margin-top: 100px;
+  margin-top: 90px;
   position: relative;
+  
 
 }
 
@@ -8,13 +9,15 @@
 .parking-lot {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 10px;
   align-items: center;
+  linear-gradient:(135deg, #8e89a2 15%, #8284c7 50%, #4348a9 100%);
 }
 
 .parking-row {
   display: flex;
-  gap: 15px;
+  gap: 10px;
+  
 }
 
 .gap {

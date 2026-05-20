@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { loginUser } from "../api/api";
 import "../styles/admin.css";
 
 
@@ -33,20 +33,16 @@ function AdminLoginModal({ isOpen, onClose }) {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost/react-auth/login.php",
-        { email, password },
-        { headers: { "Content-Type": "application/json" } }
-      );
+      const data = await loginUser({ email, password });
 
-            if (response.data.success) {
+            if (data.success) {
         localStorage.setItem("auth", "true");
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+        localStorage.setItem("user", JSON.stringify(data.user));
 
         onClose();
         navigate("/dashboard"); //  go to dashboard page
       } else {
-        setError(response.data.message || "Login failed");
+        setError(data.message || "Login failed");
       }
     } catch (err) {
       setError("Server error or no response");

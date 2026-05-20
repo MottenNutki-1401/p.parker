@@ -1,6 +1,6 @@
 import { useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
+import { registerUser } from "../api/api";
 import "../styles/login.css";
 import car from "../assets/car.svg";
 
@@ -19,16 +19,12 @@ function Register() {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost/react-auth/register.php",
-        { username, email, password },
-        { headers: { "Content-Type": "application/json" } }
-      );
+      const data = await registerUser({ username, email, password });
 
-      if (response.data.success) {
-        alert(response.data.message || "Registration successful!");
+      if (data.success) {
+        alert(data.message || "Registration successful!");
       } else {
-        alert(response.data.message || "Registration failed");
+        alert(data.message || "Registration failed");
       }
     } catch (error) {
       if (error.response) {
