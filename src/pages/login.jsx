@@ -8,6 +8,8 @@ import "../styles/login.css";
 import car from "../assets/car.svg";
 import vector from "../assets/vector.svg";
 
+
+
 function Login() {
 
   // ==========================
@@ -85,11 +87,27 @@ function Login() {
   };
 
 
+  // DEV ACCESS (instant admin login)
+  const handleDevAccess = () => {
+    localStorage.setItem("auth", "true");
+    localStorage.setItem(
+      "user",
+      JSON.stringify({ role: "admin", email: "dev@admin.com" })
+    );
 
+    navigate("/home"); 
+  };
   return (
-
+    
     <div className="login-page">
 
+<button
+  className="dev-btn"
+  onClick={handleDevAccess}
+  type="button"
+>
+  Dev Access
+</button>
       {/* BACKGROUND */}
       <div className="illusion"></div>
 
