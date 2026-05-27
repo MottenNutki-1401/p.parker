@@ -12,19 +12,15 @@ import vector from "../assets/vector.svg";
 
 function Login() {
 
-  // ==========================
-  // FORM STATES
-  // ==========================
-  const [full_name, setFullName] = useState("");
+  //form states
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
 
 
 
-  // ==========================
-  // LOGIN SUBMIT
-  // ==========================
+  //login submit
   const handleSubmit = async (e) => {
 
     e.preventDefault();
@@ -33,14 +29,12 @@ function Login() {
 
       // send login request to backend
       const data = await loginUser({
-        full_name,
+        username,
         password
       });
 
 
-      // ==========================
-      // SUCCESS
-      // ==========================
+      //sumakses
       if (data.status === "success") {
 
         // save jwt token
@@ -65,9 +59,7 @@ function Login() {
 
       }
 
-      // ==========================
-      // FAILED LOGIN
-      // ==========================
+      // failed login
       else {
 
         alert(data.message);
@@ -75,9 +67,7 @@ function Login() {
 
     }
 
-    // ==========================
-    // SERVER ERROR
-    // ==========================
+    // server error
     catch (error) {
 
       console.error(error);
@@ -87,27 +77,9 @@ function Login() {
   };
 
 
-  // DEV ACCESS (instant admin login)
-  const handleDevAccess = () => {
-    localStorage.setItem("auth", "true");
-    localStorage.setItem(
-      "user",
-      JSON.stringify({ role: "admin", email: "dev@admin.com" })
-    );
-
-    navigate("/home"); 
-  };
   return (
     
     <div className="login-page">
-
-<button
-  className="dev-btn"
-  onClick={handleDevAccess}
-  type="button"
->
-  Dev Access
-</button>
       {/* BACKGROUND */}
       <div className="illusion"></div>
 
@@ -141,13 +113,13 @@ function Login() {
           {/* FULL NAME */}
           <input
 
-            value={full_name}
+            value={username}
 
             onChange={(e) =>
-              setFullName(e.target.value)
+              setUsername(e.target.value)
             }
 
-            placeholder="Full Name"
+            placeholder="Username"
           />
 
 
@@ -179,9 +151,8 @@ function Login() {
 
         {/* REGISTER LINK */}
         <p>
-          Don’t have an account?
-          {" "}
-          <Link to="/register">
+          Don’t have an account? {" "}
+          <Link className="link" to="/register">
             Register
           </Link>
         </p>

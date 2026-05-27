@@ -1,9 +1,7 @@
 const BASE_URL = "http://localhost/smp_backend/api";
 
 
-// ==========================
 // GET PARKING SLOTS
-// ==========================
 export async function getParkingSlots() {
 
     const response = await fetch(
@@ -15,9 +13,8 @@ export async function getParkingSlots() {
 
 
 
-// ==========================
+
 // LOGIN USER
-// ==========================
 export async function loginUser(userData) {
 
     const response = await fetch(
@@ -39,13 +36,12 @@ export async function loginUser(userData) {
 
 
 
-// ==========================
+
 // REGISTER USER
-// ==========================
 export async function registerUser(userData) {
 
     const response = await fetch(
-        `${BASE_URL}/register`,
+        `${BASE_URL}/auth/register`,
         {
 
             method: "POST",
@@ -62,10 +58,7 @@ export async function registerUser(userData) {
 }
 
 
-
-// ==========================
 // GET USER PROFILE
-// ==========================
 export async function getProfile() {
 
     const token = localStorage.getItem("token");
@@ -85,9 +78,7 @@ export async function getProfile() {
 
 
 
-// ==========================
-// UPDATE USER PROFILE
-// ==========================
+//update userprofile
 export async function updateProfile(userData) {
 
     const token = localStorage.getItem("token");

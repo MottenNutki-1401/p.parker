@@ -119,3 +119,13 @@ p, h1 {
   left: -5px;
   z-index: 1;
 }
+
+/* gails mod */
+.link {
+  color: #e1aeff;
+  font-weight: bold;
+  text-shadow:
+    0 0 7px #2e0077,
+    0 0 10px #7801ff,
+    0 0 10px #ee0073;
+}
