@@ -100,3 +100,54 @@ export async function updateProfile(userData) {
 
     return await response.json();
 }
+
+// CREATE BOOKING
+export async function createBooking(bookingData) {
+
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(
+        `${BASE_URL}/bookings`,
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+
+            body: JSON.stringify(bookingData)
+        }
+    );
+
+    return await response.json();
+}
+// CREATE BILLING
+export async function createBilling(
+  billingData
+) {
+
+  const response =
+    await fetch(
+
+      `${BASE_URL}/billings`,
+
+      {
+
+        method: "POST",
+
+        headers: {
+
+          "Content-Type":
+            "application/json"
+        },
+
+        body:
+          JSON.stringify(
+            billingData
+          )
+      }
+    );
+
+  return await response.json();
+}

@@ -5,8 +5,14 @@ import Receipt from "../assets/components/receipt.jsx";
 import "../styles/receipt.css";
 import vector from "../assets/vector.svg";
 
+import { createBooking,  getParkingSlots, createBilling } from "../api/api";
+
 function ParkingSlots() {
   const currentUser = "user";
+
+    const user = JSON.parse(
+      localStorage.getItem("user")
+    );
 
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [tick, setTick] = useState(0);
@@ -19,46 +25,14 @@ function ParkingSlots() {
   
   const [timeIn, setTimeIn] = useState("");
   const [timeOut, setTimeOut] = useState("");
+  const [timeInPeriod, setTimeInPeriod] =
+  useState("AM");
 
-  const [slots, setSlots] = useState([
-    { id: 1, status: "available" },
-    { id: 2, status: "occupied", bookedBy: "user" },
-    { id: 3, status: "available" },
-    { id: 4, status: "occupied", bookedBy: "other" },
-    { id: 5, status: "occupied", bookedBy: "other" },
+  const [timeOutPeriod, setTimeOutPeriod] =
+   useState("AM");
 
-    { id: 6, status: "available" },
-    { id: 7, status: "available" },
-    { id: 8, status: "occupied", bookedBy: "other" },
-    { id: 9, status: "occupied", bookedBy: "other" },
-    { id: 10, status: "available" },
-
-    { id: 11, status: "occupied", bookedBy: "other" },
-    { id: 12, status: "occupied", bookedBy: "other" },
-    { id: 13, status: "available" },
-    { id: 14, status: "occupied", bookedBy: "other" },
-    { id: 15, status: "occupied", bookedBy: "other" },
-
-    { id: 16, status: "available" },
-    { id: 17, status: "available" },
-    { id: 18, status: "occupied", bookedBy: "other" },
-    { id: 19, status: "maintenance" },
-    { id: 20, status: "occupied", bookedBy: "other" },
-
-    { id: 21, status: "occupied", bookedBy: "other" },
-    { id: 22, status: "occupied", bookedBy: "other" },
-    { id: 23, status: "available" },
-    { id: 24, status: "occupied", bookedBy: "other" },
-
-    { id: 25, status: "occupied", bookedBy: "other" },
-    { id: 26, status: "available" },
-    { id: 27, status: "available" },
-    { id: 28, status: "available" },
-    { id: 29, status: "available" },
-    { id: 30, status: "available" },
-    { id: 31, status: "available" },
-    { id: 32, status: "available" },
-  ]);
+  //slots from db
+  const [slots, setSlots] = useState([]);
 
   const layout = [
     { type: "row", slots: [1, 2, 3, 4, null, 5, 6, 7, 8]},
@@ -77,22 +51,50 @@ function ParkingSlots() {
     const interval = setInterval(() => setTick((p) => p + 1), 1000);
     return () => clearInterval(interval);
   }, []);
+  //another useeffect
+  useEffect(() => {
+
+  loadSlots();
+
+}, []);
 
   const getStatusClass = (status) => {
-    if (status === "occupied") return "occupied";
-    if (status === "available") return "available";
-    if (status === "maintenance") return "maintenance";
-    return "";
-  };
 
-  const getContent = (status) => {
-    if (status === "occupied")
-      return <img src={topview} alt="car" className="topview" />;
-    if (status === "available") return "Available SLot";
-    if (status === "maintenance") return "Under Maintenance";
-    return "";
-  };
+  status = status?.trim().toLowerCase();
 
+  if (status === "occupied")
+    return "occupied";
+
+  if (status === "available")
+    return "available";
+
+  if (status === "maintenance")
+    return "maintenance";
+
+  return "";
+};
+
+const getContent = (status) => {
+
+  status = status?.trim().toLowerCase();
+
+  if (status === "occupied")
+    return (
+      <img
+        src={topview}
+        alt="car"
+        className="topview"
+      />
+    );
+
+  if (status === "available")
+    return "Available Slot";
+
+  if (status === "maintenance")
+    return "Under Maintenance";
+
+  return "";
+};
 const calculatePrice = (timeIn, timeOut) => {
   if (!timeIn || !timeOut) return 0;
 
@@ -114,54 +116,122 @@ const calculatePrice = (timeIn, timeOut) => {
 
   return Math.ceil(hours) * ratePerHour;
 };
+//load slots from db
+const loadSlots = async () => {
 
-  const handleBooking = () => {
-    const updated = slots.map((s) =>
-      s.id === selectedSlot.id
-        ? {
-            ...s,
-            status: "occupied",
-            bookedBy: currentUser,
-            timeIn,
-            timeOut,
-          }
-        : s
+  try {
+
+    const response =
+      await getParkingSlots();
+
+    console.log(response);
+
+    if (
+      response.status ===
+      "success"
+    ) {
+
+      setSlots(
+        response.data
+      );
+    }
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+  }
+};
+
+//booking user 
+ const handleBooking = async () => {
+
+  try {
+
+    const user = JSON.parse(
+      localStorage.getItem("user")
     );
 
-    setSlots(updated);
+    //send result to db
+   const result = await createBooking({
+
+      user_id: user.id,
+
+      parking_slot_id: selectedSlot.id,
+
+      time_in: timeIn,
+
+      time_out: timeOut,
+
+      total_amount: calculatePrice(
+        timeIn,
+        timeOut
+      )
+
+    });
+
+    if (result.status !== "success") {
+
+      alert(result.message);
+
+      return;
+    }
+
+//real db slots show ui
+    await loadSlots();
 
     setReceipt({
-  name: currentUser,
-  slotId: selectedSlot.id,
-  timeIn,
-  timeOut,
-  price: calculatePrice(timeIn, timeOut),
-  date: new Date().toLocaleString()
-              });
-  const existing = JSON.parse(localStorage.getItem("transactions")) || [];
-      localStorage.setItem(
-        "transactions",
-        JSON.stringify([
-          ...existing,
-          {
-            name: currentUser,
-            slotId: selectedSlot.id,
+      name: currentUser,
+      slotId: selectedSlot.id,
+      timeIn,
+      timeOut,
+      price: calculatePrice(timeIn, timeOut),
+      date: new Date().toLocaleString()
+    });
+
+    const existing =
+      JSON.parse(
+        localStorage.getItem("transactions")
+      ) || [];
+
+    localStorage.setItem(
+      "transactions",
+      JSON.stringify([
+        ...existing,
+        {
+          name: currentUser,
+          slotId: selectedSlot.id,
+          timeIn,
+          timeOut,
+          price: calculatePrice(
             timeIn,
-            timeOut,
-            price: calculatePrice(timeIn, timeOut),
-            date: new Date().toLocaleDateString()
-          }
-        ])
-      );
+            timeOut
+          ),
+          date:
+            new Date()
+              .toLocaleDateString()
+        }
+      ])
+    );
 
     setSelectedSlot(null);
-  };
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    alert("Booking failed");
+  }
+};
 
    const getRemainingSeconds = (slot) => {
-  if (!slot || !slot.timeOut) return 0;
+  if (!slot || !slot.time_out) return 0;
 
       const now = new Date();
-      const [h, m] = slot.timeOut.split(":");
+      const [h, m] = slot.time_out.split(":");
 
       const end = new Date();
       end.setHours(Number(h));
@@ -198,16 +268,32 @@ const calculatePrice = (timeIn, timeOut) => {
               if (slotId === null)
                 return <div key={`gap-${index}-${i}`} className="gap" />;
 
-              const slot = slots.find((s) => s.id === slotId);
+           const slot = slots.find(
+              (s) => Number(s.id) === slotId
+            );
+                          if (!slot) {
+
+                return (
+                  <div
+                    key={`${index}-${i}`}
+                    className="slot"
+                  >
+                    Loading...
+                  </div>
+                );
+              }
 
               return (
                 <div
                   key={`${index}-${i}-${slot.id}`}
-                  className={`slot ${getStatusClass(slot.status)} ${
-                    slot.bookedBy === currentUser ? "mine" : ""
-                  }`}
+                 className={`slot ${getStatusClass(slot.status)} ${
+                  Number(slot.user_id) ===
+                  Number(user?.id)
+                    ? "mine"
+                    : ""
+                }`}
                   onClick={() => setSelectedSlot(slot)} >
-                     <div className="slot-number">Slot#{slot.id}</div>
+                     <div className="slot-number">Slot#{slot.slot_number}</div>
                   {getContent(slot.status)}
                 </div>
               );
@@ -232,35 +318,83 @@ const calculatePrice = (timeIn, timeOut) => {
               <>
                 <p>Select time:</p>
 
-             <div className="time-group">
+  <div className="time-group">
+
   <div>
+
     <p>Time In</p>
+
     <input
       type="time"
       value={timeIn}
-      onChange={(e) => setTimeIn(e.target.value)}
+      onChange={(e) =>
+        setTimeIn(e.target.value)
+      }
     />
+
+    <select
+      value={timeInPeriod}
+      onChange={(e) =>
+        setTimeInPeriod(
+          e.target.value
+        )
+      }
+    >
+      <option value="AM">
+        AM
+      </option>
+
+      <option value="PM">
+        PM
+      </option>
+    </select>
+
   </div>
 
+
   <div>
+
     <p>Time Out</p>
+
     <input
       type="time"
       value={timeOut}
-      onChange={(e) => setTimeOut(e.target.value)}
+      onChange={(e) =>
+        setTimeOut(e.target.value)
+      }
     />
-  </div>
-</div>
 
-                <button className="btn3" onClick={handleBooking}>
+    <select
+      value={timeOutPeriod}
+      onChange={(e) =>
+        setTimeOutPeriod(
+          e.target.value
+        )
+      }
+    >
+      <option value="AM">
+        AM
+      </option>
+
+      <option value="PM">
+        PM
+      </option>
+    </select>
+
+  </div>
+
+</div>  
+
+ <button className="btn3" onClick={handleBooking}>
                   Confirm Booking
                 </button>
               </>
             )}
 
             {/* YOUR SLOT */}
-        {selectedSlot.status === "occupied" &&
- selectedSlot.bookedBy === currentUser && (() => {
+            {selectedSlot.status === "occupied" &&
+            Number(selectedSlot.user_id) ===
+            Number(user?.id) && (() => {
   
 const seconds = getRemainingSeconds(selectedSlot);
 const display = formatTime(seconds);
@@ -365,8 +499,9 @@ const display = formatTime(seconds);
 })()}
 
             {/* OTHER */}
-            {selectedSlot.status === "occupied" &&
-              selectedSlot.bookedBy !== currentUser && (
+           {selectedSlot.status === "occupied" &&
+            Number(selectedSlot.user_id) !==
+            Number(user?.id) && (
                 <p>Slot #{selectedSlot.id} is already occupied</p>
               )}
 

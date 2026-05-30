@@ -5,6 +5,8 @@ import RevenueReport from "../assets/components/revenuereport";
 import vector from "../assets/vector.svg";
 import SlotDetailsModal from "../assets/components/SlotDetailsModal.jsx";
 
+import { getParkingSlots } from "../api/api";
+
 function AdminDashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -12,41 +14,8 @@ function AdminDashboard() {
   const [tick, setTick] = useState(0);
   const [pendingUpdate, setPendingUpdate] = useState(null);
 
-  const [slots, setSlots] = useState([
-    { id: 1, code: "001", status: "Available" , timeLeft: 10 },
-    { id: 2, code: "002", status: "Occupied", timeLeft: 10 },
-    { id: 3, code: "003", status: "Available" , timeLeft: 10 },
-    { id: 4, code: "004", status: "Occupied" , timeLeft: 10 },
-    { id: 5, code: "005", status: "Occupied" , timeLeft: 10 },
-    { id: 6, code: "006", status: "Available" , timeLeft: 10 },
-    { id: 7, code: "007", status: "Available" , timeLeft: 10 },
-    { id: 8, code: "008", status: "Occupied" , timeLeft: 10 },
-    { id: 9, code: "009", status: "Occupied", timeLeft: 10 },
-    { id: 10, code: "010", status: "Available" , timeLeft: 10 },
-    { id: 11, code: "011", status: "Occupied" , timeLeft: 10 },
-    { id: 12, code: "012", status: "Occupied" , timeLeft: 10 },
-    { id: 13, code: "013", status: "Available" , timeLeft: 10 },
-    { id: 14, code: "014", status: "Occupied" , timeLeft: 10 },
-    { id: 15, code: "015", status: "Occupied", timeLeft: 10  },
-    { id: 16, code: "016", status: "Available" , timeLeft: 10 },
-    { id: 17, code: "017", status: "Available" , timeLeft: 10 },
-    { id: 18, code: "018", status: "Occupied" , timeLeft: 10 },
-    { id: 19, code: "019", status: "Maintenance" , timeLeft: 10 },
-    { id: 20, code: "020", status: "Occupied" , timeLeft: 10 },
-    { id: 21, code: "021", status: "Occupied" , timeLeft: 10 },
-    { id: 22, code: "022", status: "Occupied" , timeLeft: 10 },
-    { id: 23, code: "023", status: "Available" , timeLeft: 10 },
-    { id: 24, code: "024", status: "Occupied" , timeLeft: 10 },
-    { id: 25, code: "025", status: "Occupied" , timeLeft: 10 },
-    { id: 26, code: "026", status: "Available" , timeLeft: 10 },
-    { id: 27, code: "027", status: "Available" , timeLeft: 10 },
-    { id: 28, code: "028", status: "Available" , timeLeft: 10 },
-    { id: 29, code: "029", status: "Available" , timeLeft: 10 },
-    { id: 30, code: "030", status: "Available" , timeLeft: 10 },
-    { id: 31, code: "031", status: "Available" , timeLeft: 10 },
-    { id: 32, code: "032", status: "Available" , timeLeft: 10 },
-  ]);
-
+  //real db data
+  const [slots, setSlots] = useState([]);
   const layout = [
     { type: "row", slots: [1, 2, 3, 4, null, 5, 6, 7, 8] },
     { type: "road" },
@@ -56,6 +25,32 @@ function AdminDashboard() {
     { type: "road" },
     { type: "row", slots: [25, 26, 27, 28, null, 29, 30, 31, 32] },
   ];
+
+  //load slots
+  const loadSlots = async () => {
+
+  try {
+
+    const response =
+      await getParkingSlots();
+
+    if (
+      response.status ===
+      "success"
+    ) {
+
+      setSlots(
+        response.data
+      );
+    }
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+  }
+};
 
   // ---------------- TIMER ----------------
   useEffect(() => {
@@ -69,13 +64,18 @@ function AdminDashboard() {
   useEffect(() => {
     setSlots((prev) =>
       prev.map((s) =>
-        s.status === "Occupied" && (s.timeLeft ?? 0) > 0
+        s.status.toLowerCase() === "occupied" && (s.timeLeft ?? 0) > 0
           ? { ...s, timeLeft: s.timeLeft - 1 }
           : s
       )
     );
   }, [tick]);
+//useEffect
+useEffect(() => {
 
+  loadSlots();
+
+}, []);
   // ---------------- BLINK LOGIC ----------------
   const isBlinking = (slot) => {
     return (
@@ -134,8 +134,22 @@ function AdminDashboard() {
               {item.slots.map((id, j) => {
                 if (!id) return <div key={j} className="gap" />;
 
-                const slot = slots.find((s) => s.id === id);
+               //sql backend return
+               const slot = slots.find(
+                    (s) => Number(s.id) === id
+                  );
+                  //prevent crash
+                  if (!slot) {
 
+                    return (
+                      <div
+                        key={j}
+                        className="slot"
+                      >
+                        Loading...
+                      </div>
+                    );
+                  }
                 return (
                   <div
                     key={slot.id}
@@ -147,7 +161,7 @@ function AdminDashboard() {
                       Slot#{slot.code}
                     </div>
 
-                    {slot.status === "Occupied" ? (
+                    {slot.status.toLowerCase() === "occupied" ? (
                       <img src={topview} className="topview2" />
                     ) : (
                       <h3>{slot.status}</h3>
