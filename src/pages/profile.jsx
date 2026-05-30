@@ -2,6 +2,7 @@ import React from 'react';
 import '../styles/header.css';
 import ParkingSlots from './parkingslots';  
 
+
 function ProfileModal({ isOpen, onClose, onEdit }) {
   if (!isOpen) return null;
 
@@ -11,8 +12,7 @@ function ProfileModal({ isOpen, onClose, onEdit }) {
 
         <h1>Profile</h1>
 
-        <p className="slot-info">Parked in slot:
-        #{ParkingSlots.selectedSlot?.id}</p>
+        
 
         <div className="btngrp">
           

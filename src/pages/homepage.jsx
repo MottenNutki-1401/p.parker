@@ -10,7 +10,7 @@ import ParkingSlots from "./parkingslots.jsx";
 function Homepage() {
   const navigate = useNavigate();
 
-   //🔐 AUTH CHECK (your Home logic)
+   //AUTH CHECK (your Home logic)
   useEffect(() => {
    const isAuth = localStorage.getItem("auth");
 
@@ -20,9 +20,9 @@ function Homepage() {
   }, [navigate]); 
    
 
-  // 🚪 LOGOUT FUNCTION
+  // LOGOUT FUNCTION
   const handleLogout = () => {
-    localStorage.removeItem("auth");
+   localStorage.clear();
     navigate("/");
   };
 

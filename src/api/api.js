@@ -1,3 +1,6 @@
+
+import axios from "axios";
+
 const BASE_URL = "http://localhost/smp_backend/api";
 
 
@@ -151,3 +154,14 @@ export async function createBilling(
 
   return await response.json();
 }
+//get booking 
+export const getBookings =
+  async () => {
+
+    const response =
+      await axios.get(
+        `${BASE_URL}/admin/bookings`
+      );
+
+    return response.data;
+};

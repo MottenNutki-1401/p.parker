@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../styles/admin.css";
 import topview from "../assets/topview2.png";
-import RevenueReport from "../assets/components/revenuereport";
+import Report from "../assets/components/report.jsx";
 import vector from "../assets/vector.svg";
 import SlotDetailsModal from "../assets/components/SlotDetailsModal.jsx";
 
@@ -42,7 +42,12 @@ function AdminDashboard() {
       setSlots(
         response.data
       );
-    }
+                console.log(
+                    slots.map(
+                      s => s.id
+                    )
+                  );
+            }
 
   }
 
@@ -117,7 +122,7 @@ useEffect(() => {
   return (
     <div className="parking-wrapper">
 
-      <RevenueReport />
+      <Report />
 
       <img src={vector} className="yellow" alt="yellow" />
 
@@ -132,7 +137,13 @@ useEffect(() => {
             <div key={i} className="parking-row">
 
               {item.slots.map((id, j) => {
-                if (!id) return <div key={j} className="gap" />;
+              if (!id)
+                    return (
+                      <div
+                        key={`gap-${i}-${j}`}
+                        className="gap"
+                      />
+                    );      
 
                //sql backend return
                const slot = slots.find(
@@ -152,7 +163,7 @@ useEffect(() => {
                   }
                 return (
                   <div
-                    key={slot.id}
+                    key={`${i}-${j}-${slot.id}`}
                     className={`slot ${slot.status} ${isBlinking(slot) ? "blink" : ""}`}
                     onClick={() => openModal(slot)}
                   >
