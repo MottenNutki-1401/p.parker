@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "../styles/admin.css";
 import topview from "../assets/topview2.png";
 import Report from "../assets/components/report.jsx";
 import vector from "../assets/vector.svg";
 import SlotDetailsModal from "../assets/components/SlotDetailsModal.jsx";
 
-import { getParkingSlots } from "../api/api";
+import { getParkingSlots, updateParkingSlotStatus } from "../api/api";
 
 function AdminDashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
-
-  const [tick, setTick] = useState(0);
   const [pendingUpdate, setPendingUpdate] = useState(null);
 
   //real db data
@@ -27,7 +25,10 @@ function AdminDashboard() {
   ];
 
   //load slots
-  const loadSlots = async () => {
+  const normalizeStatus = (status) =>
+    String(status ?? "").trim().toLowerCase();
+
+  const loadSlots = useCallback(async () => {
 
   try {
 
@@ -42,11 +43,6 @@ function AdminDashboard() {
       setSlots(
         response.data
       );
-                console.log(
-                    slots.map(
-                      s => s.id
-                    )
-                  );
             }
 
   }
@@ -55,36 +51,17 @@ function AdminDashboard() {
 
     console.error(error);
   }
-};
+  }, []);
 
   // ---------------- TIMER ----------------
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTick((t) => t + 1);
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    setSlots((prev) =>
-      prev.map((s) =>
-        s.status.toLowerCase() === "occupied" && (s.timeLeft ?? 0) > 0
-          ? { ...s, timeLeft: s.timeLeft - 1 }
-          : s
-      )
-    );
-  }, [tick]);
-//useEffect
-useEffect(() => {
-
-  loadSlots();
-
-}, []);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadSlots();
+  }, [loadSlots]);
   // ---------------- BLINK LOGIC ----------------
   const isBlinking = (slot) => {
     return (
-      slot.status === "Occupied" &&
+      normalizeStatus(slot.status) === "occupied" &&
       (slot.timeLeft ?? 0) <= 30 &&
       (slot.timeLeft ?? 0) > 0
     );
@@ -102,22 +79,56 @@ useEffect(() => {
   };
 
   // ---------------- STATUS UPDATE ----------------
-  const updateStatus = (id, newStatus) => {
-    setSlots((prev) =>
-      prev.map((s) =>
-        s.id === id ? { ...s, status: newStatus } : s
-      )
-    );
-  };
+      const updateStatus = async (
+        id,
+        newStatus
+      ) => {
+
+        const result =
+          await updateParkingSlotStatus(
+            id,
+              normalizeStatus(newStatus)
+          );
+
+        if (
+          result.status !== "success"
+        ) {
+
+          throw new Error(
+            result.message
+          );
+        }
+
+        await loadSlots();
+      };
 
   const askUpdateStatus = (slot, newStatus) => {
     setPendingUpdate({ slot, newStatus });
   };
 
-  const confirmUpdate = () => {
-    updateStatus(pendingUpdate.slot.id, pendingUpdate.newStatus);
-    setPendingUpdate(null);
-  };
+      //confirm update
+      const confirmUpdate = async () => {
+
+        try {
+
+          await updateStatus(
+            pendingUpdate.slot.id,
+            pendingUpdate.newStatus
+          );
+
+          setPendingUpdate(null);
+
+        }
+
+        catch (error) {
+
+          console.error(error);
+
+          alert(
+            "Failed to update slot"
+          );
+        }
+      };
 
   return (
     <div className="parking-wrapper">
@@ -164,7 +175,7 @@ useEffect(() => {
                 return (
                   <div
                     key={`${i}-${j}-${slot.id}`}
-                    className={`slot ${slot.status} ${isBlinking(slot) ? "blink" : ""}`}
+                    className={`slot ${normalizeStatus(slot.status)} ${isBlinking(slot) ? "blink" : ""}`}
                     onClick={() => openModal(slot)}
                   >
 
@@ -172,7 +183,7 @@ useEffect(() => {
                       Slot#{slot.code}
                     </div>
 
-                    {slot.status.toLowerCase() === "occupied" ? (
+                    {normalizeStatus(slot.status) === "occupied" ? (
                       <img src={topview} className="topview2" />
                     ) : (
                       <h3>{slot.status}</h3>
@@ -180,16 +191,16 @@ useEffect(() => {
 
                     {/* DROPDOWN */}
                     <select
-                      className={`meow ${slot.status.toLowerCase()}`}
-                      value={slot.status}
+                      className={`meow ${normalizeStatus(slot.status)}`}
+                      value={normalizeStatus(slot.status)}
                       onClick={(e) => e.stopPropagation()}
                       onChange={(e) =>
                         askUpdateStatus(slot, e.target.value)
                       }
                     >
-                      <option value="Available">Available</option>
-                      <option value="Occupied">Occupied</option>
-                      <option value="Maintenance">Maintenance</option>
+                      <option value="available">Available</option>
+                      <option value="occupied">Occupied</option>
+                      <option value="maintenance">Maintenance</option>
                     </select>
 
                   </div>

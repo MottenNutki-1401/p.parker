@@ -14,7 +14,36 @@ export async function getParkingSlots() {
     return await response.json();
 }
 
+//update parking
+// UPDATE PARKING SLOT STATUS
+export async function updateParkingSlotStatus(
+  slotId,
+  status
+) {
 
+  const response =
+    await fetch(
+
+      `${BASE_URL}/admin/parking-slots/${slotId}`,
+
+      {
+
+        method: "PUT",
+
+        headers: {
+          "Content-Type":
+            "application/json"
+        },
+
+        body: JSON.stringify({
+
+          status: status
+        })
+      }
+    );
+
+  return await response.json();
+}
 
 
 // LOGIN USER

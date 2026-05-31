@@ -5,7 +5,7 @@ import Receipt from "../assets/components/receipt.jsx";
 import "../styles/receipt.css";
 import vector from "../assets/vector.svg";
 
-import { createBooking,  getParkingSlots, createBilling } from "../api/api";
+import { createBooking,  getParkingSlots } from "../api/api";
 
 function ParkingSlots() {
   const currentUser = "user";
@@ -15,7 +15,7 @@ function ParkingSlots() {
     );
 
   const [selectedSlot, setSelectedSlot] = useState(null);
-  const [tick, setTick] = useState(0);
+  const [, setTick] = useState(0);
 
   const [extendHours, setExtendHours] = useState(0);
   const ratePerHour = 35; 
@@ -31,6 +31,85 @@ function ParkingSlots() {
   const [timeOutPeriod, setTimeOutPeriod] =
    useState("AM");
 
+//load slots from db
+async function loadSlots() {
+
+  try {
+
+    const response =
+      await getParkingSlots();
+
+    console.log(response);
+
+          if (
+        response.status ===
+        "success"
+      ) {
+
+        console.log(
+          "SLOTS:",
+          response.data
+        );
+
+        setSlots(
+          response.data
+        );
+      }
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+  }
+}
+
+
+   //time conversion
+   const convertTo24Hour = (
+  time,
+  period
+) => {
+
+  if (!time) return "00:00";
+
+  let [hours, minutes] =
+    time.split(":").map(Number);
+
+  if (Number.isNaN(hours) || Number.isNaN(minutes)) {
+    return "00:00";
+  }
+
+  if (
+    period === "PM" &&
+    hours !== 12
+  ) {
+    hours += 12;
+  }
+
+  if (
+    period === "AM" &&
+    hours === 12
+  ) {
+    hours = 0;
+  }
+
+  return `${String(hours)
+    .padStart(2, "0")}:${String(minutes)
+    .padStart(2, "0")}`;
+};
+
+const formatDateForDb = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
+
+const formatDateTimeForDb = (date, time24) => {
+  return `${formatDateForDb(date)} ${time24}:00`;
+};
   //slots from db
   const [slots, setSlots] = useState([]);
 
@@ -51,12 +130,11 @@ function ParkingSlots() {
     const interval = setInterval(() => setTick((p) => p + 1), 1000);
     return () => clearInterval(interval);
   }, []);
+
   //another useeffect
   useEffect(() => {
-
-  loadSlots();
-
-}, []);
+    loadSlots();
+  }, []);
 
   const getStatusClass = (status) => {
 
@@ -116,34 +194,6 @@ const calculatePrice = (timeIn, timeOut) => {
 
   return Math.ceil(hours) * ratePerHour;
 };
-//load slots from db
-const loadSlots = async () => {
-
-  try {
-
-    const response =
-      await getParkingSlots();
-
-    console.log(response);
-
-    if (
-      response.status ===
-      "success"
-    ) {
-
-      setSlots(
-        response.data
-      );
-    }
-
-  }
-
-  catch (error) {
-
-    console.error(error);
-  }
-};
-
 //booking user 
  const handleBooking = async () => {
 
@@ -152,24 +202,103 @@ const loadSlots = async () => {
     const user = JSON.parse(
       localStorage.getItem("user")
     );
+    
+      const today = new Date();
 
+    const start24 =
+  convertTo24Hour(
+    timeIn,
+    timeInPeriod
+  );
+
+const end24 =
+  convertTo24Hour(
+    timeOut,
+    timeOutPeriod
+  );
+
+ let startDateTime =
+  new Date(today);
+
+let endDateTime =
+  new Date(today);
+
+const [startHours, startMinutes] =
+  start24.split(":").map(Number);
+
+const [endHours, endMinutes] =
+  end24.split(":").map(Number);
+
+startDateTime.setHours(
+  startHours,
+  startMinutes,
+  0,
+  0
+);
+
+endDateTime.setHours(
+  endHours,
+  endMinutes,
+  0,
+  0
+);
+
+// if end time is earlier,
+// assume next day
+if (
+  endDateTime <=
+  startDateTime
+) {
+
+  endDateTime.setDate(
+    endDateTime.getDate() + 1
+  );
+}
+
+startDateTime =
+  formatDateTimeForDb(
+    startDateTime,
+    start24
+  );
+
+endDateTime =
+  formatDateTimeForDb(
+    endDateTime,
+    end24
+  );
+
+console.log({
+  timeIn,
+  timeInPeriod,
+  start24,
+
+  timeOut,
+  timeOutPeriod,
+  end24,
+
+  start_datetime:
+    startDateTime,
+
+  end_datetime:
+    endDateTime
+});
     //send result to db
-   const result = await createBooking({
+          const result = await createBooking({
 
-      user_id: user.id,
+          user_id: user.id,
 
-      parking_slot_id: selectedSlot.id,
+          parking_slot_id: selectedSlot.id,
 
-      time_in: timeIn,
+          start_datetime: startDateTime,
 
-      time_out: timeOut,
+          end_datetime: endDateTime,
 
-      total_amount: calculatePrice(
-        timeIn,
-        timeOut
-      )
+          total_amount: calculatePrice(
+            timeIn,
+            timeOut
+          )
 
-    });
+        });
 
     if (result.status !== "success") {
 
@@ -227,21 +356,25 @@ const loadSlots = async () => {
   }
 };
 
-   const getRemainingSeconds = (slot) => {
-  if (!slot || !slot.time_out) return 0;
+           const getRemainingSeconds = (slot) => {
 
-      const now = new Date();
-      const [h, m] = slot.time_out.split(":");
+          const end =
+            new Date(
+              slot.end_datetime
+            );
 
-      const end = new Date();
-      end.setHours(Number(h));
-      end.setMinutes(Number(m));
-      end.setSeconds(0);
+          const now =
+            new Date();
 
-      const diff = Math.floor((end - now) / 1000);
-      return diff > 0 ? diff : 0;
-    };
+          const diff =
+            Math.floor(
+              (end - now) / 1000
+            );
 
+          return diff > 0
+            ? diff
+            : 0;
+        };
     const formatTime = (secs) => {
       const h = String(Math.floor(secs / 3600)).padStart(2, "0");
       const m = String(Math.floor((secs % 3600) / 60)).padStart(2, "0");
@@ -390,13 +523,14 @@ const loadSlots = async () => {
                 </button>
               </>
             )}
-
+              {console.log("SELECTED SLOT:", selectedSlot)}
+              {console.log("CURRENT USER:", user)}
             {/* YOUR SLOT */}
             {selectedSlot.status === "occupied" &&
             Number(selectedSlot.user_id) ===
             Number(user?.id) && (() => {
   
-const seconds = getRemainingSeconds(selectedSlot);
+const seconds = getRemainingSeconds(selectedSlot) ;
 const display = formatTime(seconds);
   const billing = extendHours * ratePerHour;
 
@@ -420,63 +554,88 @@ const display = formatTime(seconds);
 
         <div className="btn-group">
 
-       <button
-        onClick={() => {
-        const updated = slots.map((s) => {
-          if (s.id !== selectedSlot.id) return s;
+      <button
+  onClick={() => {
 
-          if (!s.timeOut) return s; //  FIX HERE
+    const updated = slots.map((s) => {
 
-          const now = new Date();
-          const [h, m] = s.timeOut.split(":");
+      if (s.id !== selectedSlot.id)
+        return s;
 
-          const end = new Date();
-          end.setHours(Number(h));
-          end.setMinutes(Number(m));
+      if (!s.end_datetime)
+        return s;
 
-          const base = end > now ? end : now;
-          base.setHours(base.getHours() + extendHours);
+      const now = new Date();
 
-          const newTimeOut = `${String(base.getHours()).padStart(2, "0")}:${String(
-            base.getMinutes()
-          ).padStart(2, "0")}`;
+      const end =
+        new Date(
+          s.end_datetime
+        );
 
-          setReceipt({
+      const base =
+        end > now
+          ? end
+          : now;
+
+      base.setHours(
+        base.getHours() +
+        extendHours
+      );
+
+      const newEndDateTime =
+        formatDateTimeForDb(
+          base,
+          `${String(base.getHours()).padStart(2, "0")}:${String(base.getMinutes()).padStart(2, "0")}`
+        );
+
+      setReceipt({
+        name: currentUser,
+        slotId: s.id,
+        timeIn: s.start_datetime,
+        timeOut: newEndDateTime,
+        price: extendHours * ratePerHour,
+        date: new Date().toLocaleString(),
+      });
+
+      const existing =
+        JSON.parse(
+          localStorage.getItem(
+            "transactions"
+          )
+        ) || [];
+
+      localStorage.setItem(
+        "transactions",
+        JSON.stringify([
+          ...existing,
+          {
             name: currentUser,
             slotId: s.id,
-            timeIn: s.timeIn,
-            timeOut: newTimeOut,
-            price: extendHours * ratePerHour,
-            date: new Date().toLocaleString(),
-          });
-        const existing = JSON.parse(localStorage.getItem("transactions")) || [];
+            timeIn: s.start_datetime,
+            timeOut: newEndDateTime,
+            price:
+              extendHours *
+              ratePerHour,
+            date:
+              new Date()
+                .toLocaleDateString()
+          }
+        ])
+      );
 
-        localStorage.setItem(
-          "transactions",
-          JSON.stringify([
-            ...existing,
-            {
-              name: currentUser,
-              slotId: s.id,
-              timeIn: s.timeIn,
-              timeOut: newTimeOut,
-              price: extendHours * ratePerHour,
-              date: new Date().toLocaleDateString()
-            }
-          ])
-        );
-        
-          return {
-            ...s,
-            timeOut: newTimeOut,
-          };
-        });
+      return {
+        ...s,
+        end_datetime:
+          newEndDateTime,
+      };
+    });
 
-        setSlots(updated);
-        setExtendHours(0);
-        setSelectedSlot(null);
-      }}
-      >
+    setSlots(updated);
+    setExtendHours(0);
+    setSelectedSlot(null);
+
+  }}
+>
   EXTEND
 </button>
 

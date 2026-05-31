@@ -168,15 +168,15 @@ background-color: rgb(255, 143, 143);
 }
 
 /* states */
-.slot.Available {
+.slot.available {
   background: #76af79;
 }
 
-.slot.Occupied {
+.slot.occupied {
   background: #9B2A3B;
 }
 
-.slot.Maintenance {
+.slot.maintenance {
   background: #e79146;
 }
 
